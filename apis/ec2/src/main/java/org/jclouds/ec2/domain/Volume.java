@@ -30,7 +30,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * 
+ *
  * @see <a href=
  *      "http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVolume.html"
  *      />
@@ -41,7 +41,7 @@ public class Volume implements Comparable<Volume> {
    /**
     * Specifies whether the instance's Amazon EBS volumes are stopped or terminated when the
     * instance is shut down.
-    * 
+    *
     * @author Adrian Cole
     */
    public static enum InstanceInitiatedShutdownBehavior {
@@ -83,7 +83,7 @@ public class Volume implements Comparable<Volume> {
          }
       }
    }
-   
+
    public static Builder builder() {
       return new Builder();
    }
@@ -103,27 +103,27 @@ public class Volume implements Comparable<Volume> {
          this.region = region;
          return this;
       }
-      
+
       public Builder id(String id) {
          this.id = id;
          return this;
       }
-      
+
       public Builder size(int size) {
          this.size = size;
          return this;
       }
-      
+
       public Builder snapshotId(String snapshotId) {
          this.snapshotId = snapshotId;
          return this;
       }
-      
+
       public Builder availabilityZone(String availabilityZone) {
          this.availabilityZone = availabilityZone;
          return this;
       }
-      
+
       public Builder status(Status status) {
          this.status = status;
          return this;
@@ -133,20 +133,32 @@ public class Volume implements Comparable<Volume> {
          this.createTime = createTime;
          return this;
       }
-      
+
       public Builder attachments(Attachment... attachments) {
          this.attachments = newHashSet(attachments);
          return this;
       }
-      
+
       public Builder attachments(Set<Attachment> attachments) {
          this.attachments = ImmutableSet.copyOf(attachments);
          return this;
       }
-      
+
+      public Builder fromVolume(Volume in) {
+         return this.id(in.getId())
+               .attachments(in.getAttachments())
+               .availabilityZone(in.getAvailabilityZone())
+               .createTime(in.getCreateTime())
+               .region(in.getRegion())
+               .size(in.getSize())
+               .snapshotId(in.getSnapshotId())
+               .status(in.getStatus());
+
+      }
+
       public Volume build() {
          return new Volume(region, id, size, snapshotId, availabilityZone, status, createTime, attachments);
-      }      
+      }
    }
 
    private final String region;

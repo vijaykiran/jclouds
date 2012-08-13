@@ -3,8 +3,10 @@ package org.jclouds.aws.ec2.services;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import org.jclouds.aws.ec2.AWSEC2ApiMetadata;
+import org.jclouds.aws.ec2.domain.AWSVolume;
+import org.jclouds.aws.ec2.domain.VolumeType;
+import org.jclouds.aws.ec2.predicates.AWSVolumeAvailable;
 import org.jclouds.ec2.domain.Volume;
-import org.jclouds.ec2.predicates.VolumeAvailable;
 import org.jclouds.ec2.services.ElasticBlockStoreClientLiveTest;
 import org.jclouds.predicates.RetryablePredicate;
 import org.testng.annotations.BeforeClass;
@@ -34,20 +36,32 @@ public class AWSElasticBlockStoreClientLiveTest extends ElasticBlockStoreClientL
       client = view.unwrap(AWSEC2ApiMetadata.CONTEXT_TOKEN).getApi().getElasticBlockStoreServices();
    }
 
-   @Test(enabled = false, dependsOnMethods = "testCreateSnapshotInRegion")
-   void testCreateVolumeFromSnapshotInAvailabilityZone() {
-      Volume volume = client.createVolumeFromSnapshotInAvailabilityZoneWithVolumeType(defaultZone, snapshot.getId(), "standard");
+   @Test
+   protected void testCreateVolumeInAvailabilityZone() {
+      super.testCreateVolumeInAvailabilityZone();
+   }
+
+   @Test(dependsOnMethods = "testCreateVolumeInAvailabilityZone")
+   protected void testCreateSnapshotInRegion() {
+      super.testCreateSnapshotInRegion();
+   }
+
+   @Test(dependsOnMethods = "testCreateSnapshotInRegion")
+   void testCreateVolumeFromSnapshotInAvailabilityZoneWithVolumeTypeAndIops() {
+      AWSVolume volume = client.createVolumeFromSnapshotInAvailabilityZoneWithVolumeTypeAndIops(defaultZone, snapshot.getId(), "standard", 500);
       assertNotNull(volume);
 
-      Predicate<Volume> availabile = new RetryablePredicate<Volume>(new VolumeAvailable(client), 600, 10,
+      Predicate<AWSVolume> available = new RetryablePredicate<AWSVolume>(new AWSVolumeAvailable(client), 600, 10,
             TimeUnit.SECONDS);
-      assert availabile.apply(volume);
+      assert available.apply(volume);
 
-      Volume result = Iterables.getOnlyElement(client.describeVolumesInRegion(snapshot.getRegion(), volume.getId()));
+      AWSVolume result = (AWSVolume) Iterables.getOnlyElement(client.describeVolumesInRegion(snapshot.getRegion(), volume.getId()));
       assertEquals(volume.getId(), result.getId());
       assertEquals(volume.getSnapshotId(), snapshot.getId());
       assertEquals(volume.getAvailabilityZone(), defaultZone);
       assertEquals(result.getStatus(), Volume.Status.AVAILABLE);
+      assertEquals(result.getVolumeType(), VolumeType.STANDARD);
+      assertEquals(result.getIops(), 500);
 
       client.deleteVolumeInRegion(snapshot.getRegion(), volume.getId());
    }

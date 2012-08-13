@@ -27,13 +27,22 @@ public class AWSVolume extends Volume {
          this.iops = iops;
          return this;
       }
+
+      public Builder fromAWSVolume(Volume in) {
+         return fromVolume(in).volumeType(VolumeType.STANDARD).iops(1);
+      }
+
+      public AWSVolume build() {
+
+      }
+
    }
 
    private VolumeType volumeType;
    private int iops;
 
 
-   protected AWSVolume(String region, String id, int size, String snapshotId, String availabilityZone, Status status, Date createTime, Iterable<Attachment> attachments, VolumeType volumeType, int iops) {
+   public AWSVolume(String region, String id, int size, String snapshotId, String availabilityZone, Status status, Date createTime, Iterable<Attachment> attachments, VolumeType volumeType, int iops) {
       super(region, id, size, snapshotId, availabilityZone, status, createTime, attachments);
       this.volumeType = volumeType;
       this.iops = iops;

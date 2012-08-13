@@ -92,7 +92,7 @@ public class ElasticBlockStoreClientLiveTest extends BaseComputeServiceContextLi
    }
 
    @Test
-   void testCreateVolumeInAvailabilityZone() {
+   protected void testCreateVolumeInAvailabilityZone() {
       Volume expected = client.createVolumeInAvailabilityZone(defaultZone, 1);
       assertNotNull(expected);
       assertEquals(expected.getAvailabilityZone(), defaultZone);
@@ -107,7 +107,7 @@ public class ElasticBlockStoreClientLiveTest extends BaseComputeServiceContextLi
    }
 
    @Test(dependsOnMethods = "testCreateVolumeInAvailabilityZone")
-   void testCreateSnapshotInRegion() {
+   protected void testCreateSnapshotInRegion() {
       Snapshot snapshot = client.createSnapshotInRegion(defaultRegion, volumeId);
       Predicate<Snapshot> snapshotted = new RetryablePredicate<Snapshot>(new SnapshotCompleted(client), 600, 10,
             TimeUnit.SECONDS);
