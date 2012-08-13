@@ -58,11 +58,11 @@ public class ElasticBlockStoreClientLiveTest extends BaseComputeServiceContextLi
    private EC2Client ec2Client;
    private ElasticBlockStoreClient client;
 
-   private String defaultRegion;
-   private String defaultZone;
+   protected String defaultRegion;
+   protected String defaultZone;
 
-   private String volumeId;
-   private Snapshot snapshot;
+   protected String volumeId;
+   protected Snapshot snapshot;
 
    @Override
    @BeforeClass(groups = { "integration", "live" })

@@ -21,6 +21,7 @@ package org.jclouds.aws.ec2;
 import java.util.concurrent.TimeUnit;
 
 import org.jclouds.aws.ec2.services.AWSAMIClient;
+import org.jclouds.aws.ec2.services.AWSElasticBlockStoreClient;
 import org.jclouds.aws.ec2.services.AWSInstanceClient;
 import org.jclouds.aws.ec2.services.AWSKeyPairClient;
 import org.jclouds.aws.ec2.services.AWSSecurityGroupClient;
@@ -79,7 +80,14 @@ public interface AWSEC2Client extends EC2Client {
    @Delegate
    @Override
    AWSKeyPairClient getKeyPairServices();
-   
+
+   /**
+    * {@inheritDoc}
+    */
+   @Delegate
+   @Override
+   AWSElasticBlockStoreClient getElasticBlockStoreServices();
+
    /**
     * Provides synchronous access to SpotInstance services.
     */

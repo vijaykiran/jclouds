@@ -19,6 +19,7 @@
 package org.jclouds.aws.ec2;
 
 import org.jclouds.aws.ec2.services.AWSAMIAsyncClient;
+import org.jclouds.aws.ec2.services.AWSElasticBlockStoreAsyncClient;
 import org.jclouds.aws.ec2.services.AWSInstanceAsyncClient;
 import org.jclouds.aws.ec2.services.AWSKeyPairAsyncClient;
 import org.jclouds.aws.ec2.services.AWSSecurityGroupAsyncClient;
@@ -31,7 +32,7 @@ import org.jclouds.rest.annotations.Delegate;
 
 /**
  * Provides asynchronous access to EC2 services.
- * 
+ *
  * @author Adrian Cole
  */
 public interface AWSEC2AsyncClient extends EC2AsyncClient {
@@ -76,6 +77,13 @@ public interface AWSEC2AsyncClient extends EC2AsyncClient {
    @Delegate
    @Override
    AWSKeyPairAsyncClient getKeyPairServices();
+
+   /**
+    * {@inheritDoc}
+    */
+   @Delegate
+   @Override
+   AWSElasticBlockStoreAsyncClient getElasticBlockStoreServices();
 
    /**
     * Provides asynchronous access to SpotInstance services.

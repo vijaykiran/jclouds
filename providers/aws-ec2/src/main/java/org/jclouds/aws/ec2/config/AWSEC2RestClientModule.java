@@ -18,16 +18,16 @@
  */
 package org.jclouds.aws.ec2.config;
 
-import java.util.Map;
-
-import javax.inject.Singleton;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
+import com.google.inject.Provides;
 import org.jclouds.aws.ec2.AWSEC2AsyncClient;
 import org.jclouds.aws.ec2.AWSEC2Client;
 import org.jclouds.aws.ec2.domain.AWSRunningInstance;
 import org.jclouds.aws.ec2.options.AWSRunInstancesOptions;
 import org.jclouds.aws.ec2.services.AWSAMIAsyncClient;
 import org.jclouds.aws.ec2.services.AWSAMIClient;
+import org.jclouds.aws.ec2.services.AWSElasticBlockStoreClient;
 import org.jclouds.aws.ec2.services.AWSInstanceAsyncClient;
 import org.jclouds.aws.ec2.services.AWSInstanceClient;
 import org.jclouds.aws.ec2.services.AWSKeyPairAsyncClient;
@@ -65,19 +65,18 @@ import org.jclouds.ec2.services.WindowsAsyncClient;
 import org.jclouds.ec2.services.WindowsClient;
 import org.jclouds.rest.ConfiguresRestClient;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.reflect.TypeToken;
-import com.google.inject.Provides;
+import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * Configures the EC2 connection.
- * 
+ *
  * @author Adrian Cole
  */
 @ConfiguresRestClient
 public class AWSEC2RestClientModule extends EC2RestClientModule<AWSEC2Client, AWSEC2AsyncClient> {
 
-   public static final Map<Class<?>, Class<?>> DELEGATE_MAP = ImmutableMap.<Class<?>, Class<?>> builder()//
+   public static final Map<Class<?>, Class<?>> DELEGATE_MAP = ImmutableMap.<Class<?>, Class<?>>builder()//
          .put(AWSAMIClient.class, AWSAMIAsyncClient.class)//
          .put(ElasticIPAddressClient.class, ElasticIPAddressAsyncClient.class)//
          .put(AWSInstanceClient.class, AWSInstanceAsyncClient.class)//
@@ -87,7 +86,7 @@ public class AWSEC2RestClientModule extends EC2RestClientModule<AWSEC2Client, AW
          .put(MonitoringClient.class, MonitoringAsyncClient.class)//
          .put(WindowsClient.class, WindowsAsyncClient.class)//
          .put(AvailabilityZoneAndRegionClient.class, AvailabilityZoneAndRegionAsyncClient.class)//
-         .put(ElasticBlockStoreClient.class, ElasticBlockStoreAsyncClient.class)//
+         .put(AWSElasticBlockStoreClient.class, AWSElasticBlockStoreClient.class)//
          .put(SpotInstanceClient.class, SpotInstanceAsyncClient.class)//
          .put(TagClient.class, TagAsyncClient.class)//
          .put(WindowsApi.class, WindowsAsyncApi.class)//
@@ -156,6 +155,20 @@ public class AWSEC2RestClientModule extends EC2RestClientModule<AWSEC2Client, AW
    TagAsyncClient getTagServices(AWSEC2AsyncClient in) {
       return in.getTagServices();
    }
+
+   @Singleton
+   @Provides
+   ElasticBlockStoreAsyncClient getElasticBlockStoreServices(AWSEC2AsyncClient in) {
+      return in.getElasticBlockStoreServices();
+   }
+
+   @Singleton
+   @Provides
+   ElasticBlockStoreClient  getElasticBlockStoreServices(AWSEC2Client in) {
+      return in.getElasticBlockStoreServices();
+   }
+
+
 
    @Override
    protected void configure() {
